@@ -4,8 +4,12 @@ int main () {
     int number;
     scanf("%d", &number);
 
-    int max = number/100%10 > number/10%10 ? number/100%10 : number/10%10;
-    max = number%10 > max ? number%10 : max;
+    int d1 = number/100%10;
+    int d2 = number/10%10;
+    int d3 = number%10;
+
+    int max = d1 > d2 ? d1 : d2;
+    max = d3 > max ? d3 : max;
 
     printf("%d", max);
     return 0;

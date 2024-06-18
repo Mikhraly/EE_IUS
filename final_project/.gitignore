@@ -1,5 +1,5 @@
-*.exe
-*.out
 *.txt
+*.csv
 
 obj/*
+out/*

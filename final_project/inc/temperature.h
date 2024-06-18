@@ -6,16 +6,19 @@
 #include "dyn_array.h"
 
 typedef struct temperature {
-    uint32_t year;
-    uint32_t month;
-    uint32_t day;
-    uint32_t hour;
-    uint32_t minute;
+    int32_t year;
+    int32_t month;
+    int32_t day;
+    int32_t hour;
+    int32_t minute;
     int32_t value;
 } Temperature;
 
+void t_print_tittle();
+void t_print_line();
+void t_print_all_statistic(Dyn_array *t_arr);
 void t_print_arr(Dyn_array *t_arr);
 void t_print_year_statistic(Dyn_array *t_arr);
-void t_print_month_statistic(Dyn_array *t_arr);
+void t_print_month_statistic(Dyn_array *t_arr, int32_t month);
 
 #endif

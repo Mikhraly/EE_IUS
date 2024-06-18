@@ -65,7 +65,7 @@ void t_print_year_statistic(Dyn_array *t_arr) {
         printf(
             "%4.d\t%s\t%3.d\t%3.d\t%3.d\t%3.d\n",
             ((Temperature*)dyn_array_get(t_arr, 0))->year,
-            "all", t_arr->count, min, max, average
+            "all", count, min, max, average
         );
     }
 }

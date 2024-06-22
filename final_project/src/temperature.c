@@ -67,7 +67,7 @@ void t_print_year_statistic(Dyn_array *t_arr) {
         average = summ / count;
         
         printf(
-            "%4.d\t%s\t%3.d\t%3.d\t%3.d\t%3.d\n",
+            "%4d\t%s\t%3d\t%3d\t%3d\t%3d\n",
             ((Temperature*)dyn_array_get(t_arr, 0))->year,
             "all", count, min, max, average
         );
@@ -104,7 +104,7 @@ void t_print_month_statistic(Dyn_array *t_arr, int32_t month) {
         average = summ / count;
 
         printf(
-            "%4.d\t%3.d\t%3.d\t%3.d\t%3.d\t%3.d\n",
+            "%4d\t%3d\t%3d\t%3d\t%3d\t%3d\n",
             ((Temperature*)dyn_array_get(t_arr, 0))->year,
             month, count, min, max, average
         );

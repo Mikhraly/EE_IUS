@@ -16,7 +16,7 @@ typedef struct temperature {
 
 void t_print_tittle();
 void t_print_line();
-void t_print_all_statistic(Dyn_array *t_arr);
+void t_print_statistic(Dyn_array *t_arr, int32_t month);
 void t_print_arr(Dyn_array *t_arr);
 void t_print_year_statistic(Dyn_array *t_arr);
 void t_print_month_statistic(Dyn_array *t_arr, int32_t month);

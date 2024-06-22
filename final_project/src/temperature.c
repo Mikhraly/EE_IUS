@@ -15,14 +15,18 @@ void t_print_arr(Dyn_array *t_arr) {
     printf("\n");
 }
 
-void t_print_all_statistic(Dyn_array *t_arr) {
+void t_print_statistic(Dyn_array *t_arr, int32_t month) {
     t_print_tittle();
     t_print_line();
-    for (int i = 1; i <= 12; i++) {
-        t_print_month_statistic(t_arr, i);
+    if (month == 0) {
+        for (int i = 1; i <= 12; i++) {
+            t_print_month_statistic(t_arr, i);
+        }
+        t_print_line();
+        t_print_year_statistic(t_arr);
+    } else {
+        t_print_month_statistic(t_arr, month);
     }
-    t_print_line();
-    t_print_year_statistic(t_arr);
 }
 
 void t_print_tittle() {

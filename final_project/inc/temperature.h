@@ -14,11 +14,13 @@ typedef struct temperature {
     int32_t value;
 } Temperature;
 
+void t_print_arr(Dyn_array *t_arr);
+void t_print_statistic(Dyn_array *t_arr, int32_t month);
 void t_print_tittle();
 void t_print_line();
-void t_print_statistic(Dyn_array *t_arr, int32_t month);
-void t_print_arr(Dyn_array *t_arr);
-void t_print_year_statistic(Dyn_array *t_arr);
-void t_print_month_statistic(Dyn_array *t_arr, int32_t month);
+int t_get_min(Dyn_array *t_arr, int month);
+int t_get_max(Dyn_array *t_arr, int month);
+int t_get_average(Dyn_array *t_arr, int month);
+int t_get_count(Dyn_array *t_arr, int month);
 
 #endif

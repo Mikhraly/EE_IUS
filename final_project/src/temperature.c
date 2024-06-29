@@ -15,98 +15,112 @@ void t_print_arr(Dyn_array *t_arr) {
     printf("\n");
 }
 
+// 1..12 - for month; 0 - for year; >12 for all
 void t_print_statistic(Dyn_array *t_arr, int32_t month) {
+    if (t_arr == NULL)
+        return;
+
     t_print_tittle();
-    t_print_line();
-    if (month == 0) {
-        for (int i = 1; i <= 12; i++) {
-            t_print_month_statistic(t_arr, i);
-        }
+
+    if (month > 0) {
         t_print_line();
-        t_print_year_statistic(t_arr);
-    } else {
-        t_print_month_statistic(t_arr, month);
+        for (int32_t m = 1; m <= 12; m++) {
+            if (month <= 12 && month != m)
+                continue;
+
+            if (t_get_count(t_arr, m)) {
+                printf(
+                    "%4d\t%3d\t%3d\t%3d\t%3d\t%3d\n",
+                    ((Temperature*)dyn_array_get(t_arr, 0))->year,
+                    m,
+                    t_get_count(t_arr, m),
+                    t_get_min(t_arr, m),
+                    t_get_max(t_arr, m),
+                    t_get_average(t_arr, m)
+                );
+            }
+        }
     }
+
+    if (month == 0 || month > 12) {
+        if (t_get_count(t_arr, 0)) {
+            t_print_line();
+            printf(
+                "%4d\t%s\t%3d\t%3d\t%3d\t%3d\n",
+                ((Temperature*)dyn_array_get(t_arr, 0))->year,
+                "all",
+                t_get_count(t_arr, 0),
+                t_get_min(t_arr, 0),
+                t_get_max(t_arr, 0),
+                t_get_average(t_arr, 0)
+            );
+        }
+    }
+    printf("\n");
 }
 
 void t_print_tittle() {
-    printf("Year\tMonth\tValues\tMin\tMax\tAverage\n");
+    printf("\nYear\tMonth\tValues\tMin\tMax\tAverage\n");
 }
 
 void t_print_line() {
     printf("-----------------------------------------------\n");
 }
 
-void t_print_year_statistic(Dyn_array *t_arr) {
-    if (t_arr == NULL)
-        return;
-
+// 1..12 - for month; 0 - for year
+int t_get_min(Dyn_array *t_arr, int month) {
     int32_t min = INT32_MAX;
-    int32_t max = INT32_MIN;
-    int32_t average;
-
-    int32_t summ = 0;
-    int32_t count = 0;
-    for (int32_t temp, i = 0; i < t_arr->count; i++) {
-        if (((Temperature*)dyn_array_get(t_arr, i))->month == 0)
+    for (int32_t i = 0; i < t_arr->count; i++) {
+        if (month && month != ((Temperature*)dyn_array_get(t_arr, i))->month)
             continue;
-
-        temp = ((Temperature*)dyn_array_get(t_arr, i))->value;
-
-        if (temp < min)
-            min = temp;
-
-        if (temp > max)
-            max = temp;
-
-        summ += temp;
-        count++;
-    }
-
-    if (count != 0) {
-        average = summ / count;
         
-        printf(
-            "%4d\t%s\t%3d\t%3d\t%3d\t%3d\n",
-            ((Temperature*)dyn_array_get(t_arr, 0))->year,
-            "all", count, min, max, average
-        );
+        if (((Temperature*)dyn_array_get(t_arr, i))->year) {
+            int32_t temp = ((Temperature*)dyn_array_get(t_arr, i))->value;
+            min = temp < min ? temp : min;
+        }
     }
+    return min;
 }
 
-void t_print_month_statistic(Dyn_array *t_arr, int32_t month) {
-    if (t_arr == NULL)
-        return;
-
-    int32_t min = INT32_MAX;
+// 1..12 - for month; 0 - for year
+int t_get_max(Dyn_array *t_arr, int month) {
     int32_t max = INT32_MIN;
-    int32_t average;
-
-    int32_t summ = 0;
-    int32_t count = 0;
-    for (int32_t temp, i = 0; i < t_arr->count; i++) {
-        if (((Temperature*)dyn_array_get(t_arr, i))->month != month)
+    for (int32_t i = 0; i < t_arr->count; i++) {
+        if (month && month != ((Temperature*)dyn_array_get(t_arr, i))->month)
             continue;
         
-        temp = ((Temperature*)dyn_array_get(t_arr, i))->value;
+        if (((Temperature*)dyn_array_get(t_arr, i))->year) {
+            int32_t temp = ((Temperature*)dyn_array_get(t_arr, i))->value;
+            max = temp > max ? temp : max;
+        }
+    }
+    return max;
+}
 
-        if (temp < min)
-            min = temp;
-
-        if (temp > max)
-            max = temp;
+// 1..12 - for month; 0 - for year
+int t_get_average(Dyn_array *t_arr, int month) {
+    int32_t sum = 0;
+    int32_t count = 0;
+    for (int32_t i = 0; i < t_arr->count; i++) {
+        if (month && month != ((Temperature*)dyn_array_get(t_arr, i))->month)
+            continue;
         
-        summ += temp;
-        count++;
+        if (((Temperature*)dyn_array_get(t_arr, i))->year) {
+            sum += ((Temperature*)dyn_array_get(t_arr, i))->value;
+            count++;
+        }
     }
+    return count ? sum / count : INT32_MIN;
+}
 
-    if (count != 0) {
-        average = summ / count;
-
-        printf(
-            "%4d\t%3d\t%3d\t%3d\t%3d\t%3d\n",
-            ((Temperature*)dyn_array_get(t_arr, 0))->year,
-            month, count, min, max, average
-        );
+// 1..12 - for month; 0 - for year
+int t_get_count(Dyn_array *t_arr, int month) {
+    int32_t count = 0;
+    for (int32_t i = 0; i < t_arr->count; i++) {
+        if (month && month != ((Temperature*)dyn_array_get(t_arr, i))->month)
+            continue;
+        if (((Temperature*)dyn_array_get(t_arr, i))->year)
+            count++;
     }
+    return count;
 }

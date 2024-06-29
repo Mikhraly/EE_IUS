@@ -15,12 +15,13 @@ int main(int argc, char *argv[])
         _Bool help    :1;
         _Bool file    :1;
         _Bool month   :1;
+        _Bool year    :1;
         _Bool list    :1;
         char *file_arg;
         char *month_arg;
-    } options = {FALSE, FALSE, FALSE, FALSE, NULL, NULL};
+    } options = {FALSE, FALSE, FALSE, FALSE, FALSE, NULL, NULL};
 
-    for (int opt; (opt = getopt(argc, argv, "hf:m:l")) != -1;) {
+    for (int opt; (opt = getopt(argc, argv, "hf:m:yl")) != -1;) {
         switch (opt) {
         case 'h':
             options.help = TRUE;
@@ -32,6 +33,9 @@ int main(int argc, char *argv[])
         case 'm':
             options.month = TRUE;
             options.month_arg = optarg;
+            break;
+        case 'y':
+            options.year = TRUE;
             break;
         case 'l':
             options.list = TRUE;
@@ -94,8 +98,10 @@ int main(int argc, char *argv[])
             t_print_arr(temp_arr);
         } else if (options.month) {
             t_print_statistic(temp_arr, atoi(options.month_arg));
-        } else {
+        } else if (options.year) {
             t_print_statistic(temp_arr, 0);
+        } else {
+            t_print_statistic(temp_arr, 13);
         }
 
         dyn_array_free(temp_arr);

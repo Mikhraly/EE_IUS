@@ -54,13 +54,26 @@ int main(int argc, char *argv[])
     if (argc == 1 || options.help) {
         printf("The program reads data from a file and prints the "
             "temperature sensor statistics. Use these flags:\n");
-        printf("-h -- Print help\n");
+        printf("-h -- Print detailed help\n");
+        if (options.help)
+            printf("\tExample: ./out/report -h\n");
         printf("-f -- The name of the input file\n");
+        if (options.help)
+            printf("\tExample: ./out/report -f temperature_small.csv\n");
         printf("-m -- Number of month. Use with '-f' flag\n");
+        if (options.help)
+            printf("\tExample: ./out/report -f temperature_small.csv -m [1..12]\n");
         printf("-y -- Year. Use with '-f' flag\n");
+        if (options.help)
+            printf("\tExample: ./out/report -f temperature_small.csv -y\n");
         printf("-l -- Print the list of data. Use with '-f' flag\n");
-        printf("-s -- Sort the list of data (optional). Args: 'up' or 'down'. "
-            "Use with '-f' and '-l' flags \n");
+        if (options.help)
+            printf("\tExample: ./out/report -f temperature_small.csv -l\n");
+        printf("-s -- Sort data. Use with '-f' and '-l' (optional) flags \n");
+        if (options.help) {
+            printf("\tExample: ./out/report -f temperature_small.csv -s [month, values, min, max, average]\n");
+            printf("\tExample: ./out/report -f temperature_small.csv -l -s [date, time, value]\n");
+        }
         return 0;
     }
 
@@ -103,23 +116,48 @@ int main(int argc, char *argv[])
             dyn_array_add(temp_arr, &temp);
         }
 
+        Statistic temp_stat[13] = {};
+        create_statistic(temp_stat, temp_arr);
+
         if (options.list) {
             if (options.sort) {
-                if (!strcmp(options.sort_arg, "up")) {
+                if (!strcmp(options.sort_arg, "date")) {
                     qsort(temp_arr->data, temp_arr->count,
-                        sizeof(Temperature), sort_arr_temp_up);
-                } else if (!strcmp(options.sort_arg, "down")) {
+                        sizeof(Temperature), sort_arr_day);
                     qsort(temp_arr->data, temp_arr->count,
-                        sizeof(Temperature), sort_arr_temp_down);
+                        sizeof(Temperature), sort_arr_month);
+                    qsort(temp_arr->data, temp_arr->count,
+                        sizeof(Temperature), sort_arr_year);
+                } else if (!strcmp(options.sort_arg, "time")) {
+                    qsort(temp_arr->data, temp_arr->count,
+                        sizeof(Temperature), sort_arr_minute);
+                    qsort(temp_arr->data, temp_arr->count,
+                        sizeof(Temperature), sort_arr_hour);
+                } else if (!strcmp(options.sort_arg, "value")) {
+                    qsort(temp_arr->data, temp_arr->count,
+                        sizeof(Temperature), sort_arr_value);
                 }
             }
             t_print_arr(temp_arr);
         } else if (options.month) {
-            t_print_statistic(temp_arr, atoi(options.month_arg));
+            t_print_statistic(temp_stat, atoi(options.month_arg));
         } else if (options.year) {
-            t_print_statistic(temp_arr, 0);
+            t_print_statistic(temp_stat, 0);
         } else {
-            t_print_statistic(temp_arr, 13);
+            if (options.sort) {
+                if (!strcmp(options.sort_arg, "month")) {
+                    qsort(&temp_stat[1], 12, sizeof(Statistic), sort_stat_month);
+                } else if (!strcmp(options.sort_arg, "values")) {
+                    qsort(&temp_stat[1], 12, sizeof(Statistic), sort_stat_values);
+                } else if (!strcmp(options.sort_arg, "min")) {
+                    qsort(&temp_stat[1], 12, sizeof(Statistic), sort_stat_min);
+                } else if (!strcmp(options.sort_arg, "max")) {
+                    qsort(&temp_stat[1], 12, sizeof(Statistic), sort_stat_max);
+                } else if (!strcmp(options.sort_arg, "average")) {
+                    qsort(&temp_stat[1], 12, sizeof(Statistic), sort_stat_average);
+                }
+            }
+            t_print_statistic(temp_stat, 13);
         }
 
         dyn_array_free(temp_arr);

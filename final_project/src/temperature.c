@@ -1,8 +1,10 @@
 #include "temperature.h"
 
 void t_print_arr(Dyn_array *t_arr) {
+    printf("#\tdate\t\ttime\tvalue\n");
+    printf("-------------------------------------\n");
     for (int i = 0; i < t_arr->count; i++) {
-        printf("%d\t%.4d.%.2d.%.2d %.2d:%.2d %.2d\n",
+        printf("%d\t%.4d.%.2d.%.2d\t%.2d:%.2d\t%.2d\n",
             i + 1,
             ((Temperature*)dyn_array_get(t_arr, i))->year,
             ((Temperature*)dyn_array_get(t_arr, i))->month,
@@ -17,10 +19,7 @@ void t_print_arr(Dyn_array *t_arr) {
 }
 
 // 1..12 - for month; 0 - for year; >12 for all
-void t_print_statistic(Dyn_array *t_arr, int32_t month) {
-    if (t_arr == NULL)
-        return;
-
+void t_print_statistic(Statistic temp_stat[], int32_t month) {
     t_print_tittle();
 
     if (month > 0) {
@@ -29,31 +28,31 @@ void t_print_statistic(Dyn_array *t_arr, int32_t month) {
             if (month <= 12 && month != m)
                 continue;
 
-            if (t_get_count(t_arr, m)) {
+            if (temp_stat[m].values > 0) {
                 printf(
                     "%4d\t%3d\t%3d\t%3d\t%3d\t%3d\n",
-                    ((Temperature*)dyn_array_get(t_arr, 0))->year,
-                    m,
-                    t_get_count(t_arr, m),
-                    t_get_min(t_arr, m),
-                    t_get_max(t_arr, m),
-                    t_get_average(t_arr, m)
+                    temp_stat[m].year,
+                    temp_stat[m].month,
+                    temp_stat[m].values,
+                    temp_stat[m].min,
+                    temp_stat[m].max,
+                    temp_stat[m].average
                 );
             }
         }
     }
 
     if (month == 0 || month > 12) {
-        if (t_get_count(t_arr, 0)) {
+        if (temp_stat[0].values > 0) {
             t_print_line();
             printf(
                 "%4d\t%s\t%3d\t%3d\t%3d\t%3d\n",
-                ((Temperature*)dyn_array_get(t_arr, 0))->year,
+                temp_stat[0].year,
                 "all",
-                t_get_count(t_arr, 0),
-                t_get_min(t_arr, 0),
-                t_get_max(t_arr, 0),
-                t_get_average(t_arr, 0)
+                temp_stat[0].values,
+                temp_stat[0].min,
+                temp_stat[0].max,
+                temp_stat[0].average
             );
         }
     }
@@ -61,7 +60,7 @@ void t_print_statistic(Dyn_array *t_arr, int32_t month) {
 }
 
 void t_print_tittle() {
-    printf("\nYear\tMonth\tValues\tMin\tMax\tAverage\n");
+    printf("\nyear\tmonth\tvalues\tmin\tmax\taverage\n");
 }
 
 void t_print_line() {
@@ -126,10 +125,61 @@ int t_get_count(Dyn_array *t_arr, int month) {
     return count;
 }
 
-int sort_arr_temp_up(const void *a, const void *b) {
+int sort_arr_day(const void *a, const void *b) {
+    return ((Temperature*)a)->day - ((Temperature*)b)->day;
+}
+
+int sort_arr_month(const void *a, const void *b) {
+    return ((Temperature*)a)->month - ((Temperature*)b)->month;
+}
+
+int sort_arr_year(const void *a, const void *b) {
+    return ((Temperature*)a)->year - ((Temperature*)b)->year;
+}
+
+int sort_arr_minute(const void *a, const void *b) {
+    return ((Temperature*)a)->minute - ((Temperature*)b)->minute;
+}
+
+int sort_arr_hour(const void *a, const void *b) {
+    return ((Temperature*)a)->hour - ((Temperature*)b)->hour;
+}
+
+int sort_arr_value(const void *a, const void *b) {
     return ((Temperature*)a)->value - ((Temperature*)b)->value;
 }
 
-int sort_arr_temp_down(const void *a, const void *b) {
-    return ((Temperature*)b)->value - ((Temperature*)a)->value;
+
+void create_statistic(Statistic temp_stat[], Dyn_array *temp_arr) {
+    if (temp_arr == NULL)
+        return;
+
+    for (int32_t i = 0; i < 13; i++) {
+        temp_stat[i].year = ((Temperature*)(temp_arr->data))[0].year;
+        temp_stat[i].month = i;
+        temp_stat[i].values = t_get_count(temp_arr, i);
+        temp_stat[i].min = t_get_min(temp_arr, i);
+        temp_stat[i].max = t_get_max(temp_arr, i);
+        temp_stat[i].average = t_get_average(temp_arr, i);
+    }
+}
+
+int sort_stat_month(const void *a, const void *b) {
+    return ((Statistic*)a)->month - ((Statistic*)b)->month;
+}
+
+int sort_stat_values(const void *a, const void *b) {
+    return ((Statistic*)a)->values - ((Statistic*)b)->values;
+}
+
+int sort_stat_min(const void *a, const void *b) {
+    return ((Statistic*)a)->min - ((Statistic*)b)->min;
+}
+
+int sort_stat_max(const void *a, const void *b) {
+    return ((Statistic*)a)->max - ((Statistic*)b)->max;
+}
+
+int sort_stat_average(const void *a, const void *b) {
+    return ((Statistic*)a)->average - ((Statistic*)b)->average;
 }

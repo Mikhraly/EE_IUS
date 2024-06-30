@@ -17,11 +17,13 @@ int main(int argc, char *argv[])
         _Bool month   :1;
         _Bool year    :1;
         _Bool list    :1;
+        _Bool sort    :1;
         char *file_arg;
         char *month_arg;
-    } options = {FALSE, FALSE, FALSE, FALSE, FALSE, NULL, NULL};
+        char *sort_arg;
+    } options = {FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, NULL, NULL, NULL};
 
-    for (int opt; (opt = getopt(argc, argv, "hf:m:yl")) != -1;) {
+    for (int opt; (opt = getopt(argc, argv, "hf:m:yls:")) != -1;) {
         switch (opt) {
         case 'h':
             options.help = TRUE;
@@ -40,6 +42,10 @@ int main(int argc, char *argv[])
         case 'l':
             options.list = TRUE;
             break;
+        case 's':
+            options.sort = TRUE;
+            options.sort_arg = optarg;
+            break;
         default:
             break;
         }
@@ -52,7 +58,9 @@ int main(int argc, char *argv[])
         printf("-f -- The name of the input file\n");
         printf("-m -- Number of month. Use with '-f' flag\n");
         printf("-y -- Year. Use with '-f' flag\n");
-        printf("-l -- Print only the list of data. Use with '-f' flag\n");
+        printf("-l -- Print the list of data. Use with '-f' flag\n");
+        printf("-s -- Sort the list of data (optional). Args: 'up' or 'down'. "
+            "Use with '-f' and '-l' flags \n");
         return 0;
     }
 
@@ -96,6 +104,15 @@ int main(int argc, char *argv[])
         }
 
         if (options.list) {
+            if (options.sort) {
+                if (!strcmp(options.sort_arg, "up")) {
+                    qsort(temp_arr->data, temp_arr->count,
+                        sizeof(Temperature), sort_arr_temp_up);
+                } else if (!strcmp(options.sort_arg, "down")) {
+                    qsort(temp_arr->data, temp_arr->count,
+                        sizeof(Temperature), sort_arr_temp_down);
+                }
+            }
             t_print_arr(temp_arr);
         } else if (options.month) {
             t_print_statistic(temp_arr, atoi(options.month_arg));

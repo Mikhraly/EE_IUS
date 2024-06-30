@@ -10,6 +10,7 @@ void t_print_arr(Dyn_array *t_arr) {
             ((Temperature*)dyn_array_get(t_arr, i))->hour,
             ((Temperature*)dyn_array_get(t_arr, i))->minute,
             ((Temperature*)dyn_array_get(t_arr, i))->value
+            // ((Temperature*)(temp_arr->data))[i].value
         );
     }
     printf("\n");
@@ -123,4 +124,12 @@ int t_get_count(Dyn_array *t_arr, int month) {
             count++;
     }
     return count;
+}
+
+int sort_arr_temp_up(const void *a, const void *b) {
+    return ((Temperature*)a)->value - ((Temperature*)b)->value;
+}
+
+int sort_arr_temp_down(const void *a, const void *b) {
+    return ((Temperature*)b)->value - ((Temperature*)a)->value;
 }

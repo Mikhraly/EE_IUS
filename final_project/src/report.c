@@ -51,6 +51,7 @@ int main(int argc, char *argv[])
         printf("-h -- Print help\n");
         printf("-f -- The name of the input file\n");
         printf("-m -- Number of month. Use with '-f' flag\n");
+        printf("-y -- Year. Use with '-f' flag\n");
         printf("-l -- Print only the list of data. Use with '-f' flag\n");
         return 0;
     }

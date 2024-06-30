@@ -52,7 +52,7 @@ int main(int argc, char *argv[])
     }
 
     if (argc == 1 || options.help) {
-        printf("The program reads data from a file and prints the "
+        printf("\nThe program reads data from a file and prints the "
             "temperature sensor statistics. Use these flags:\n");
         printf("-h -- Print detailed help\n");
         if (options.help)
@@ -72,8 +72,9 @@ int main(int argc, char *argv[])
         printf("-s -- Sort data. Use with '-f' and '-l' (optional) flags \n");
         if (options.help) {
             printf("\tExample: ./out/report -f temperature_small.csv -s [month, values, min, max, average]\n");
-            printf("\tExample: ./out/report -f temperature_small.csv -l -s [date, time, value]\n");
+            printf("\tExample: ./out/report -f temperature_small.csv -l -s [date, time, date+time, value]\n");
         }
+        printf("\n");
         return 0;
     }
 
@@ -123,16 +124,13 @@ int main(int argc, char *argv[])
             if (options.sort) {
                 if (!strcmp(options.sort_arg, "date")) {
                     qsort(temp_arr->data, temp_arr->count,
-                        sizeof(Temperature), sort_arr_day);
-                    qsort(temp_arr->data, temp_arr->count,
-                        sizeof(Temperature), sort_arr_month);
-                    qsort(temp_arr->data, temp_arr->count,
-                        sizeof(Temperature), sort_arr_year);
+                        sizeof(Temperature), sort_arr_date);
                 } else if (!strcmp(options.sort_arg, "time")) {
                     qsort(temp_arr->data, temp_arr->count,
-                        sizeof(Temperature), sort_arr_minute);
+                        sizeof(Temperature), sort_arr_time);
+                } else if (!strcmp(options.sort_arg, "date+time")) {
                     qsort(temp_arr->data, temp_arr->count,
-                        sizeof(Temperature), sort_arr_hour);
+                        sizeof(Temperature), sort_arr_date_time);
                 } else if (!strcmp(options.sort_arg, "value")) {
                     qsort(temp_arr->data, temp_arr->count,
                         sizeof(Temperature), sort_arr_value);

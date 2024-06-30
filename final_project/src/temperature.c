@@ -125,24 +125,36 @@ int t_get_count(Dyn_array *t_arr, int month) {
     return count;
 }
 
-int sort_arr_day(const void *a, const void *b) {
-    return ((Temperature*)a)->day - ((Temperature*)b)->day;
+int sort_arr_date(const void *a, const void *b) {
+    return
+        (((Temperature*)a)->year * 10000 +
+        ((Temperature*)a)->month * 100 +
+        ((Temperature*)a)->day) - 
+        (((Temperature*)b)->year * 10000 +
+        ((Temperature*)b)->month * 100 +
+        ((Temperature*)b)->day);
 }
 
-int sort_arr_month(const void *a, const void *b) {
-    return ((Temperature*)a)->month - ((Temperature*)b)->month;
+int sort_arr_time(const void *a, const void *b) {
+    return
+        (((Temperature*)a)->hour * 100 +
+        ((Temperature*)a)->minute) - 
+        (((Temperature*)b)->hour * 100 +
+        ((Temperature*)b)->minute);
 }
 
-int sort_arr_year(const void *a, const void *b) {
-    return ((Temperature*)a)->year - ((Temperature*)b)->year;
-}
-
-int sort_arr_minute(const void *a, const void *b) {
-    return ((Temperature*)a)->minute - ((Temperature*)b)->minute;
-}
-
-int sort_arr_hour(const void *a, const void *b) {
-    return ((Temperature*)a)->hour - ((Temperature*)b)->hour;
+int sort_arr_date_time(const void *a, const void *b) {
+    return
+        (((Temperature*)a)->year * 100000000 +
+        ((Temperature*)a)->month * 1000000 +
+        ((Temperature*)a)->day * 10000 +
+        ((Temperature*)a)->hour * 100 +
+        ((Temperature*)a)->minute) - 
+        (((Temperature*)b)->year * 100000000 +
+        ((Temperature*)b)->month * 1000000 +
+        ((Temperature*)b)->day * 10000 +
+        ((Temperature*)b)->hour * 100 +
+        ((Temperature*)b)->minute);
 }
 
 int sort_arr_value(const void *a, const void *b) {

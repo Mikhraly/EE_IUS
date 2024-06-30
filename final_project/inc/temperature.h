@@ -33,11 +33,9 @@ int t_get_max(Dyn_array *t_arr, int month);
 int t_get_average(Dyn_array *t_arr, int month);
 int t_get_count(Dyn_array *t_arr, int month);
 
-int sort_arr_day(const void *a, const void *b);
-int sort_arr_month(const void *a, const void *b);
-int sort_arr_year(const void *a, const void *b);
-int sort_arr_minute(const void *a, const void *b);
-int sort_arr_hour(const void *a, const void *b);
+int sort_arr_date(const void *a, const void *b);
+int sort_arr_time(const void *a, const void *b);
+int sort_arr_date_time(const void *a, const void *b);
 int sort_arr_value(const void *a, const void *b);
 
 void create_statistic(Statistic temp_stat[], Dyn_array *temp_arr);

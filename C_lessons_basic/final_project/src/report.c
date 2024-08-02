@@ -117,7 +117,7 @@ int main(int argc, char *argv[])
             dyn_array_add(temp_arr, &temp);
         }
 
-        Statistic temp_stat[13] = {};
+        Statistic temp_stat[13] = {0};
         create_statistic(temp_stat, temp_arr);
 
         if (options.list) {
